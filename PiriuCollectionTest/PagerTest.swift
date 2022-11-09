@@ -2,8 +2,6 @@
 //  PagerTest.swift
 //  PiriuCollectionTest
 //
-//   
-//
 
 import Foundation
 import UIKit

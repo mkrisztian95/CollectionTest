@@ -2,8 +2,6 @@
 //  SceneDelegate.swift
 //  PiriuCollectionTest
 //
-//   
-//
 
 import UIKit
 

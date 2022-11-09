@@ -16,9 +16,11 @@
 		02B56BA32913E67A00A42703 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02B56BA12913E67A00A42703 /* LaunchScreen.storyboard */; };
 		02B56BAD2913E68A00A42703 /* ScrollableCollectionSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BAA2913E68900A42703 /* ScrollableCollectionSections.swift */; };
 		02B56BAE2913E68A00A42703 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BAB2913E68900A42703 /* HeaderView.swift */; };
-		02B56BAF2913E68A00A42703 /* TestCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BAC2913E68A00A42703 /* TestCollectionCell.swift */; };
+		02B56BAF2913E68A00A42703 /* TestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BAC2913E68A00A42703 /* TestTableViewCell.swift */; };
 		02B56BB12914047200A42703 /* ContentCollectionViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BB02914047200A42703 /* ContentCollectionViewTest.swift */; };
 		02B56BB32914079400A42703 /* TestContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B56BB22914079400A42703 /* TestContentView.swift */; };
+		02BF5F74291C5E8C00C6F2B0 /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02BF5F73291C5E8C00C6F2B0 /* HeaderView.xib */; };
+		02BF5F78291C62B100C6F2B0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BF5F77291C62B100C6F2B0 /* Extensions.swift */; };
 		02D85148291407CC00714BF4 /* TestContentView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02D85147291407CC00714BF4 /* TestContentView.xib */; };
 /* End PBXBuildFile section */
 
@@ -34,9 +36,11 @@
 		02B56BA42913E67A00A42703 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		02B56BAA2913E68900A42703 /* ScrollableCollectionSections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollableCollectionSections.swift; sourceTree = "<group>"; };
 		02B56BAB2913E68900A42703 /* HeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
-		02B56BAC2913E68A00A42703 /* TestCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCollectionCell.swift; sourceTree = "<group>"; };
+		02B56BAC2913E68A00A42703 /* TestTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestTableViewCell.swift; sourceTree = "<group>"; };
 		02B56BB02914047200A42703 /* ContentCollectionViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentCollectionViewTest.swift; sourceTree = "<group>"; };
 		02B56BB22914079400A42703 /* TestContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestContentView.swift; sourceTree = "<group>"; };
+		02BF5F73291C5E8C00C6F2B0 /* HeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
+		02BF5F77291C62B100C6F2B0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		02D85147291407CC00714BF4 /* TestContentView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestContentView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -70,9 +74,10 @@
 		02B56B952913E67900A42703 /* PiriuCollectionTest */ = {
 			isa = PBXGroup;
 			children = (
+				02BF5F73291C5E8C00C6F2B0 /* HeaderView.xib */,
 				02B56BAB2913E68900A42703 /* HeaderView.swift */,
 				02B56BAA2913E68900A42703 /* ScrollableCollectionSections.swift */,
-				02B56BAC2913E68A00A42703 /* TestCollectionCell.swift */,
+				02B56BAC2913E68A00A42703 /* TestTableViewCell.swift */,
 				02B56B962913E67900A42703 /* AppDelegate.swift */,
 				02B56B982913E67900A42703 /* SceneDelegate.swift */,
 				02B56B9A2913E67900A42703 /* ViewController.swift */,
@@ -83,6 +88,7 @@
 				02B56BB02914047200A42703 /* ContentCollectionViewTest.swift */,
 				02B56BB6291407A300A42703 /* TestContentView */,
 				023CE02B291409900001570B /* PagerTest.swift */,
+				02BF5F77291C62B100C6F2B0 /* Extensions.swift */,
 			);
 			path = PiriuCollectionTest;
 			sourceTree = "<group>";
@@ -155,6 +161,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				02B56BA32913E67A00A42703 /* LaunchScreen.storyboard in Resources */,
+				02BF5F74291C5E8C00C6F2B0 /* HeaderView.xib in Resources */,
 				02B56BA02913E67A00A42703 /* Assets.xcassets in Resources */,
 				02D85148291407CC00714BF4 /* TestContentView.xib in Resources */,
 				02B56B9E2913E67900A42703 /* Main.storyboard in Resources */,
@@ -173,7 +180,8 @@
 				02B56BAE2913E68A00A42703 /* HeaderView.swift in Sources */,
 				02B56BAD2913E68A00A42703 /* ScrollableCollectionSections.swift in Sources */,
 				02B56B9B2913E67900A42703 /* ViewController.swift in Sources */,
-				02B56BAF2913E68A00A42703 /* TestCollectionCell.swift in Sources */,
+				02BF5F78291C62B100C6F2B0 /* Extensions.swift in Sources */,
+				02B56BAF2913E68A00A42703 /* TestTableViewCell.swift in Sources */,
 				02B56B972913E67900A42703 /* AppDelegate.swift in Sources */,
 				02B56BB32914079400A42703 /* TestContentView.swift in Sources */,
 				02B56B992913E67900A42703 /* SceneDelegate.swift in Sources */,

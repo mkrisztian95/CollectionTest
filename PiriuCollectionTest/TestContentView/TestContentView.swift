@@ -2,15 +2,18 @@
 //  TestContentView.swift
 //  PiriuCollectionTest
 //
-//   
-//
 
 import UIKit
+
+protocol ContentScrollBridgeProtocol: AnyObject {
+	func shouldTranslateScrollToParent()
+}
 
 @IBDesignable
 class TestContentView: UIView {
 	@IBOutlet var contentView: UIView!
 	@IBOutlet weak var collection: UICollectionView!
+	weak var delegate: ContentScrollBridgeProtocol?
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -29,8 +32,7 @@ class TestContentView: UIView {
 		contentView.frame = bounds
 		contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		contentView.backgroundColor = .red
-
-		collection.register(TestCollectionCell.self, forCellWithReuseIdentifier: TestCollectionCell.reuseId)
+		collection.register(TestCollectionViewCell.self, forCellWithReuseIdentifier: TestCollectionViewCell.reuseId)
 		collection.delegate = self
 		collection.dataSource = self
 		collection.reloadData()
@@ -43,12 +45,18 @@ extension TestContentView: UICollectionViewDelegate, UICollectionViewDataSource,
 	}
 
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TestCollectionCell.reuseId, for: indexPath) as? TestCollectionCell else { return UICollectionViewCell(frame: .zero) }
+		guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TestCollectionViewCell.reuseId, for: indexPath) as? TestCollectionViewCell else { return UICollectionViewCell(frame: .zero) }
 		cell.setUp(color: .black.withAlphaComponent(CGFloat.random(in: 0.1...0.75)))
 		return cell
 	}
 
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		return CGSize(width: collectionView.frame.width / 2 - 2 , height: 300.0)
+	}
+
+	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		if scrollView.scrollDirection == .up && scrollView.contentOffset.y == 0 {
+			delegate?.shouldTranslateScrollToParent()
+		}
 	}
 }

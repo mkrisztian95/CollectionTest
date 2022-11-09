@@ -13,43 +13,56 @@ class ViewController: UIViewController {
 		]
 	}()
 
-	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var tableView: UITableView!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		collectionView.delegate = self
-		collectionView.dataSource = self
-		collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.reuseId)
-		collectionView.reloadData()
+		tableView.registerHeader(HeaderView.self)
+		tableView.delegate = self
+		tableView.dataSource = self
+
+		tableView.reloadData()
+	}
+
+	private func firstVisibleToScrollToTop(_ scrollView: UIScrollView) -> IndexPath? {
+		return tableView.indexPathsForVisibleRows?.filter({ indexPath in
+			return sections[indexPath.section].directionToScrollSectionToTop == scrollView.scrollDirection && sections[indexPath.section].autoScrollToTheTopOfDisplay
+		}).first
+	}
+
+	private func firstVisibleToScrollNext(_ scrollView: UIScrollView) -> IndexPath? {
+		tableView.indexPathsForVisibleRows?.filter({ indexPath in
+			return sections[indexPath.section].directionToDragNextSection == scrollView.scrollDirection && sections[indexPath.section].shouldDragToTheNextSection
+		}).first
 	}
 }
 
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension ViewController: UITableViewDelegate, UITableViewDataSource, ContentScrollBridgeProtocol {
 	// MARK: - collection Items
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return sections[section].numberOfCells
-	}
-
-	func numberOfSections(in collectionView: UICollectionView) -> Int {
+	func numberOfSections(in tableView: UITableView) -> Int {
 		return sections.count
 	}
 
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return sections[section].numberOfCells
+	}
+
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let section = sections[indexPath.section]
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: TestTableViewCell.reuseId, for: indexPath) as? TestTableViewCell else { return UITableViewCell(frame: .zero) }
 		switch sections[indexPath.section] {
 		case .profileInfo:
-			guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TestCollectionCell.reuseId, for: indexPath) as? TestCollectionCell else { return UICollectionViewCell(frame: .zero) }
 			cell.setUp(color: .black.withAlphaComponent(CGFloat.random(in: 0.1...0.75)))
 			return cell
 		case .content:
-			guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TestCollectionCell.reuseId, for: indexPath) as? TestCollectionCell else { return UICollectionViewCell(frame: .zero) }
 
 			// MOC
-			let view = ScrollableStackView(frame: section.getCellSize(frame: collectionView.frame))
-			let tView1 = TestContentView(frame: section.getCellSize(frame: collectionView.frame))
-			let tView2 = UIView(frame: section.getCellSize(frame: collectionView.frame))
+			let view = ScrollableStackView(frame: section.getCellSize(frame: tableView.frame))
+			let tView1 = TestContentView(frame: section.getCellSize(frame: tableView.frame))
+			tView1.delegate = self
+			let tView2 = UIView(frame: section.getCellSize(frame: tableView.frame))
 			tView2.backgroundColor = .blue
-			let tView3 = UIView(frame: section.getCellSize(frame: collectionView.frame))
+			let tView3 = UIView(frame: section.getCellSize(frame: tableView.frame))
 			tView3.backgroundColor = .red
 			view.setUp(items: [tView1, tView2, tView3])
 			cell.setUp(with: view)
@@ -60,44 +73,54 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
 	}
 
 	// MARK: - Frame/Size/header
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-		return sections[indexPath.section].getCellSize(frame: collectionView.frame).size
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return sections[indexPath.section].getCellSize(frame: tableView.frame).size.height
 	}
 
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-		return sections[section].getHeaderSize(frame: collectionView.frame)
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return sections[section].getHeaderSize(frame: tableView.frame).height
 	}
 
-	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-		if !sections[indexPath.section].hasHeader {
-			return  UICollectionReusableView()
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		if !sections[section].hasHeader {
+			return  nil
 		}
-		switch kind {
-			case UICollectionView.elementKindSectionHeader:
-			guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderView.reuseId, for: indexPath) as? HeaderView else {return UICollectionReusableView(frame: .zero)}
-			headerView.setUp()
-			return headerView
 
-			default:
-				assert(false, "Unexpected element kind")
-			}
+		guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: HeaderView.reuseId) as? HeaderView else {return nil}
+		return headerView
+	}
+
+	// MARK: - ContentScrollBridgeProtocol
+	func shouldTranslateScrollToParent() {
+		self.tableView.setContentOffset(.zero, animated: true)
 	}
 
 	// MARK:- scroll handling
-	func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-		if let firstVisible = collectionView.indexPathsForVisibleItems.filter({ indexPath in
-			return sections[indexPath.section].directionToScrollSectionToTop == scrollView.scrollDirection && sections[indexPath.section].autoScrollToTheTopOfDisplay
-		}).first {
-			collectionView.scrollToItem(at: IndexPath(row: 0, section: firstVisible.section), at: .top, animated: true)
+	func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+		if let firstVisible = self.firstVisibleToScrollToTop(scrollView), sections.indices.contains(firstVisible.section + 1) {
+			tableView.cellForRow(at: IndexPath(row: 0, section: firstVisible.section + 1))?.isUserInteractionEnabled = false
 		}
 
-		if let firstVisible = collectionView.indexPathsForVisibleItems.filter({ indexPath in
-			return sections[indexPath.section].directionToDragNextSection == scrollView.scrollDirection && sections[indexPath.section].shouldDragToTheNextSection
-		}).first {
-			if sections.indices.contains(firstVisible.section + 1) {
-				collectionView.scrollToItem(at: IndexPath(row: 0, section: firstVisible.section + 1), at: .top, animated: true)
-			}
+		if let firstVisible = self.firstVisibleToScrollNext(scrollView), sections.indices.contains(firstVisible.section + 1) {
+			tableView.cellForRow(at: IndexPath(row: 0, section: firstVisible.section + 1))?.isUserInteractionEnabled = true
+		}
+	}
 
+	func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+		if let firstVisible = self.firstVisibleToScrollToTop(scrollView) {
+			if sections.indices.contains(firstVisible.section + 1) {
+				let indexPath = IndexPath(row: 0, section: firstVisible.section + 1)
+				tableView.cellForRow(at: indexPath)?.isUserInteractionEnabled = false
+			}
+			tableView.scrollToRow(at: IndexPath(row: 0, section: firstVisible.section), at: .top, animated: true)
+		}
+
+		if let firstVisible = firstVisibleToScrollNext(scrollView) {
+			if sections.indices.contains(firstVisible.section + 1) {
+				let indexPath = IndexPath(row: 0, section: firstVisible.section + 1)
+				tableView.cellForRow(at: indexPath)?.isUserInteractionEnabled = true
+				tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+			}
 		}
 	}
 }

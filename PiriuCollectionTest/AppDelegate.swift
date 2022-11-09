@@ -2,8 +2,6 @@
 //  AppDelegate.swift
 //  PiriuCollectionTest
 //
-//   
-//
 
 import UIKit
 
