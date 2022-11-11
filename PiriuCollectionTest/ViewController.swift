@@ -106,6 +106,24 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ContentScr
 		}
 	}
 
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		if let firstVisible = self.firstVisibleToScrollToTop(scrollView) {
+			if sections.indices.contains(firstVisible.section + 1) {
+				let indexPath = IndexPath(row: 0, section: firstVisible.section + 1)
+				tableView.cellForRow(at: indexPath)?.isUserInteractionEnabled = false
+			}
+			tableView.scrollToRow(at: IndexPath(row: 0, section: firstVisible.section), at: .top, animated: true)
+		}
+
+		if let firstVisible = firstVisibleToScrollNext(scrollView) {
+			if sections.indices.contains(firstVisible.section + 1) {
+				let indexPath = IndexPath(row: 0, section: firstVisible.section + 1)
+				tableView.cellForRow(at: indexPath)?.isUserInteractionEnabled = true
+				tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+			}
+		}
+	}
+
 	func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
 		if let firstVisible = self.firstVisibleToScrollToTop(scrollView) {
 			if sections.indices.contains(firstVisible.section + 1) {
