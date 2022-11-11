@@ -14,6 +14,7 @@ class TestContentView: UIView {
 	@IBOutlet var contentView: UIView!
 	@IBOutlet weak var collection: UICollectionView!
 	weak var delegate: ContentScrollBridgeProtocol?
+	var latestContentOffset: CGPoint = .zero
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)

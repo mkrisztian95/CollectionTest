@@ -90,7 +90,7 @@ enum ScrollableCollectionSections {
 }
 
 extension UIScrollView {
-	enum DragDirection {
+	enum DragDirection: String {
 		case up
 		case down
 	}

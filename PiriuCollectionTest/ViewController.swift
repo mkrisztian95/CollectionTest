@@ -114,7 +114,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource, ContentScr
 			}
 			tableView.scrollToRow(at: IndexPath(row: 0, section: firstVisible.section), at: .top, animated: true)
 		}
- 
+
 		if let firstVisible = firstVisibleToScrollNext(scrollView) {
 			if sections.indices.contains(firstVisible.section + 1) {
 				let indexPath = IndexPath(row: 0, section: firstVisible.section + 1)
